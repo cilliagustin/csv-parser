@@ -339,32 +339,50 @@ export function formatNameFromSingleColumn(raw, pattern) {
   }
 }
 
-export function formatTimestamp(value, order) {
-  if (!value) return "";
+// ============================================================================
+// FORMAT TIMESTAMP — Always zero-pads DD/MM/YYYY HH:MM
+// ============================================================================
 
-  try {
-    const clean = String(value).replace(/[-]/g, "/");
-    const [datePart, timePartRaw] = clean.split(/[ T]/);
-    const dateParts = datePart.split("/").map((p) => p.trim());
-    const timeParts = (timePartRaw || "00:00").split(":");
+export function formatTimestamp(raw, order = "DMY") {
+  if (!raw) return "";
 
-    let day, month, year;
-    if (order === "DMY") [day, month, year] = dateParts;
-    else if (order === "MDY") [month, day, year] = dateParts;
-    else if (order === "YMD") [year, month, day] = dateParts;
-    else return value; // if order is invalid, return as-is
+  const str = String(raw).trim();
+  const pad2 = (n) => String(n).padStart(2, "0");
 
-    const dd = String(parseInt(day, 10)).padStart(2, "0");
-    const mm = String(parseInt(month, 10)).padStart(2, "0");
-    const yyyy = String(year || "").padStart(4, "0");
-    const hh = String(parseInt(timeParts[0] || "0", 10)).padStart(2, "0");
-    const min = String(parseInt(timeParts[1] || "0", 10)).padStart(2, "0");
+  // Match flexible separators and optional time
+  const match = str.match(/^(\d{1,4})[\/\-](\d{1,2})[\/\-](\d{1,4})(?:\s+(\d{1,2}):(\d{1,2}))?$/);
+  let d, m, y, hh = 0, mm = 0;
 
-    return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
-  } catch {
-    return String(value);
+  if (match) {
+    const [_, p1, p2, p3, phh, pmm] = match;
+    const n1 = Number(p1), n2 = Number(p2), n3 = Number(p3);
+    hh = Number(phh) || 0;
+    mm = Number(pmm) || 0;
+
+    // Map based on order
+    if (order === "DMY") {
+      [d, m, y] = [n1, n2, n3];
+    } else if (order === "MDY") {
+      [m, d, y] = [n1, n2, n3];
+    } else if (order === "YMD") {
+      [y, m, d] = [n1, n2, n3];
+    }
+  } else {
+    // Handle ISO YYYY-MM-DD formats safely
+    const iso = str.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2}))?/);
+    if (iso) {
+      const [_, y1, m1, d1, hh1, mm1] = iso.map(Number);
+      [y, m, d, hh, mm] = [y1, m1, d1, hh1 || 0, mm1 || 0];
+    } else {
+      // If the format is unknown, return the raw string
+      return str;
+    }
   }
+
+  // Always pad everything: DD/MM/YYYY HH:MM
+  return `${pad2(d)}/${pad2(m)}/${y} ${pad2(hh)}:${pad2(mm)}`;
 }
+
 
 
 export function formatPhoneForOutput(value) {

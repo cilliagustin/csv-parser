@@ -1,0 +1,238 @@
+:root {
+  --map-red: #ffd6d6;
+  --map-red-dark: #ff8a8a;
+  --map-blue: #d6ecff;
+  --map-blue-dark: #66b3ff;
+  --map-yellow: #fff5cc;
+  --map-yellow-dark: #ffd633;
+  --map-purple: #ebd6ff;
+  --map-purple-dark: #b366ff;
+  --map-orange: #ffe5cc;
+  --map-orange-dark: #ff944d;
+  --map-green: #d6ffd6;
+  --map-green-dark: #66cc66;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================= */
+/* PREVIEWS (shared by both modals) */
+/* ============================= */
+#originalPreview,
+#resultPreview,
+#contactsOriginalPreview,
+#contactsResultPreview {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-bottom: 1rem;
+}
+
+#originalPreview table,
+#resultPreview table,
+#contactsOriginalPreview table,
+#contactsResultPreview table {
+  white-space: nowrap;
+}
+
+#originalPreview th,
+#originalPreview td,
+#resultPreview th,
+#resultPreview td,
+#contactsOriginalPreview th,
+#contactsOriginalPreview td,
+#contactsResultPreview th,
+#contactsResultPreview td {
+  max-width: 240px;
+  height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+  cursor: default;
+}
+
+/* ============================= */
+/* COLOR MAPS — Step Highlights  */
+/* ============================= */
+.map-step1-head {
+  background-color: var(--map-red-dark) !important;
+}
+.map-step1-body {
+  background-color: var(--map-red) !important;
+}
+.map-step2-head {
+  background-color: var(--map-blue-dark) !important;
+}
+.map-step2-body {
+  background-color: var(--map-blue) !important;
+}
+.map-step3-head {
+  background-color: var(--map-yellow-dark) !important;
+}
+.map-step3-body {
+  background-color: var(--map-yellow) !important;
+}
+.map-step4-head {
+  background-color: var(--map-purple-dark) !important;
+}
+.map-step4-body {
+  background-color: var(--map-purple) !important;
+}
+.map-step5-head {
+  background-color: var(--map-orange-dark) !important;
+}
+.map-step5-body {
+  background-color: var(--map-orange) !important;
+}
+.map-step6-head {
+  background-color: var(--map-green-dark) !important;
+}
+.map-step6-body {
+  background-color: var(--map-green) !important;
+}
+
+/* ============================= */
+/* TABLE CONTAINERS & ERRORS     */
+/* ============================= */
+.table-container {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.error-cell {
+  background-color: #ffd6d6 !important;
+  color: #fff;
+  font-weight: bold;
+}
+
+#errorOriginalPreview,
+#errorResultPreview {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#errorModal th:first-child,
+#errorModal td:first-child {
+  text-align: center;
+  background-color: #f9f9f9;
+  color: #666;
+  font-weight: 500;
+}
+
+/* ============================= */
+/* FLOATING HELP BUTTON & MODAL  */
+/* ============================= */
+#helpBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 28px;
+  border: none;
+  background-color: #0d6efd;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+#helpBtn:hover {
+  background-color: #0b5ed7;
+  transform: scale(1.05);
+}
+
+/* Bottom-left modal */
+#helpModal .modal-dialog {
+  position: fixed;
+  bottom: 80px;
+  left: 20px;
+  margin: 0;
+  width: 420px;
+  pointer-events: all;
+}
+
+#helpModal .modal-content {
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  position: relative;
+  overflow: hidden;
+}
+
+#helpMascot {
+  height: 200px;
+  max-width: 150px;
+  object-fit: contain;
+}
+
+#helpText {
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+/* ============================= */
+/* CONTACTS MODAL VISUAL PARITY  */
+/* ============================= */
+
+/* Make contacts modal look and behave like mapping modal */
+#contactsModal .modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+#contactsModal h5.modal-title {
+  font-weight: 600;
+}
+
+#contactsModal .modal-body {
+  background-color: #fff;
+}
+
+#contactsModal h6 {
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+#contactsModal table th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+}
+
+#contactsModal table td {
+  background-color: #fff;
+}
+
+#contactsModal .modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+#contactsModal .form-check-label {
+  font-weight: 500;
+}
+
+#contactsModal .form-select,
+#contactsModal .form-control {
+  min-width: 200px;
+}
+
+/* Match highlight color when selecting name/phone columns */
+#contactsOriginalPreview th:hover,
+#contactsResultPreview th:hover {
+  background-color: var(--map-blue);
+  cursor: pointer;
+}
+
+/* ============================= */
+/* RESPONSIVE TWEAKS             */
+/* ============================= */
+@media (max-width: 768px) {
+  #helpModal .modal-dialog {
+    width: 90%;
+    left: 5%;
+  }
+}

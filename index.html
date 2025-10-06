@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSV Mapper</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="p-3">
+    <div class="container mt-4">
+      <h1>CSV Mapping</h1>
+  <input type="file" id="csvUpload" accept=".csv" class="form-control mb-3" />
+
+  <div class="d-flex gap-2">
+    <button id="mapConversationsBtn" class="btn btn-primary" disabled>
+      Map Conversations
+    </button>
+    <button id="mapContactsBtn" class="btn btn-secondary" disabled>
+      Export Contacts
+    </button>
+  </div>
+</div>
+
+    <!-- MAPPING MODAL -->
+    <div class="modal fade" id="mappingModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mapping Wizard</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <h6>Original Preview</h6>
+            <div id="originalPreview"></div>
+
+            <h6>Result Preview</h6>
+            <div id="resultPreview"></div>
+
+            <!-- STEP 1 -->
+            <div id="nameFormatControls" class="hidden mt-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="nameFormatCheckbox" disabled />
+                <label class="form-check-label" for="nameFormatCheckbox">Format name</label>
+              </div>
+              <div class="mt-2">
+                <label for="nameFormatSelect" class="form-label mb-1">Original name format</label>
+                <select id="nameFormatSelect" class="form-select w-auto" disabled>
+                  <option value="">— Select original format —</option>
+                  <option value="LAST_FIRST">Last First</option>
+                  <option value="LAST_FIRST_MIDDLE">Last First Middle</option>
+                  <option value="LAST_SECONDLAST_FIRST">Last SecondLast First</option>
+                  <option value="LAST_SECONDLAST_FIRST_MIDDLE">Last SecondLast First Middle</option>
+                  <option value="FIRST_MIDDLE_LAST">First Middle Last</option>
+                  <option value="FIRST_LAST_SECONDLAST">First Last SecondLast</option>
+                  <option value="FIRST_MIDDLE_LAST_SECONDLAST">First Middle Last SecondLast</option>
+                </select>
+                <div class="form-text">Works only when exactly one name column is selected.</div>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div id="timestampFormatContainer" class="hidden mt-3">
+              <label for="timestampFormat" class="form-label">Select Date Order</label>
+              <select id="timestampFormat" class="form-select w-auto">
+                <option value="">-- Choose order --</option>
+                <option value="DMY">DD/MM/YYYY</option>
+                <option value="MDY">MM/DD/YYYY</option>
+                <option value="YMD">YYYY/MM/DD</option>
+              </select>
+              <div class="form-text">
+                Separators "-" and "/" are both accepted. Seconds, ms, and timezone are ignored.
+              </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div id="directionInputs" class="hidden mt-3">
+              <label class="form-label">Message Direction Mapping</label>
+              <div class="row g-2">
+                <div class="col-auto">
+                  <input
+                    type="text"
+                    id="inboundToken"
+                    class="form-control"
+                    placeholder="Inbound token"
+                  />
+                </div>
+                <div class="col-auto">
+                  <input
+                    type="text"
+                    id="outboundToken"
+                    class="form-control"
+                    placeholder="Outbound token"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div id="channelPhoneContainer" class="hidden mt-3">
+              <label for="channelPhone" class="form-label">Channel Phone Number</label>
+              <input
+                type="text"
+                id="channelPhone"
+                class="form-control w-auto"
+                placeholder="(555) 555-5555"
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="backBtn" class="btn btn-secondary">Back</button>
+            <button id="nextBtn" class="btn btn-primary">Next</button>
+            <button id="finishBtn" class="btn btn-success hidden">Finish</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACTS MODAL -->
+<div class="modal fade" id="contactsModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Contacts Mapper</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <h6>Original Preview</h6>
+            <div id="contactsOriginalPreview"></div>
+
+            <h6>Result Preview</h6>
+            <div id="contactsResultPreview"></div>
+
+            <div id="contactsNameFormatControls" class="hidden mt-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="contactsNameFormatCheckbox"
+                />
+                <label class="form-check-label" for="contactNameFormatCheckbox">
+                  Format name
+                </label>
+              </div>
+              <select id="contactsNameFormatSelect" class="form-select w-auto mt-2">
+                <option value="">— Select original format —</option>
+                <option value="LAST_FIRST">Last First</option>
+                <option value="FIRST_LAST">First Last</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="contactsBackBtn" class="btn btn-secondary">Back</button>
+            <button id="contactsNextBtn" class="btn btn-primary">Next</button>
+            <button id="contactsFinishBtn" class="btn btn-success hidden">Finish</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR MODAL -->
+    <div class="modal fade" id="errorModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-warning-subtle">
+            <h5 class="modal-title">Validation Results</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p id="errorSummary" class="fw-bold text-danger mb-3"></p>
+            <div class="row">
+              <div class="col-6">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6>Original Preview (Errored Rows)</h6>
+                  <button class="btn btn-sm btn-outline-secondary" data-preview="errorOriginal">
+                    🔍 Fullscreen
+                  </button>
+                </div>
+                <div id="errorOriginalPreview" class="table-container"></div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6>Result Preview (Errored Rows)</h6>
+                  <button class="btn btn-sm btn-outline-secondary" data-preview="errorResult">
+                    🔍 Fullscreen
+                  </button>
+                </div>
+                <div id="errorResultPreview" class="table-container"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="exportValidBtn" class="btn btn-success">Export Files</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULLSCREEN TABLE MODAL -->
+    <div class="modal fade" id="fullscreenTableModal" tabindex="-1">
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="fullscreenTableTitle">Preview</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body overflow-auto">
+            <div id="fullscreenTableContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🤠 HELP BUTTON & MODAL -->
+    <button id="helpBtn">?</button>
+
+    <div class="modal fade" id="helpModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content p-3">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title">Cowboy Helper</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="helpBody">
+            <div class="d-flex align-items-center justify-content-between">
+              <div id="helpText" class="pe-3">
+                <h6 id="helpStepTitle" class="fw-bold"></h6>
+                <p id="helpStepText" class="mb-0"></p>
+              </div>
+              <div class="text-center">
+                <img id="helpMascot" src="media/1.png" alt="Mascot" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button id="prevHelp" class="btn btn-secondary btn-sm">Back</button>
+            <button id="nextHelp" class="btn btn-primary btn-sm">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/help.js"></script>
+  </body>
+</html>
